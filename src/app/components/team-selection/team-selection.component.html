@@ -1,0 +1,24 @@
+<table class="table">
+  <thead>
+  <tr>
+    <th scope="col" style="--color: #E3350D">Team Name</th>
+    <th scope="col" style="--color: #ee6b2f">Pokemon 1</th>
+    <th scope="col" style="--color: #e6bc2f">Pokemon 2</th>
+    <th scope="col" style="--color: #4dad5b">Pokemon 3</th>
+    <th scope="col" style="--color: #30a7d7"></th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let team of teams">
+    <td scope="row">{{ team.name }}</td>
+    <td *ngFor="let pokemon of team.pokemons">
+      <div class="cell-content">
+        <img src="{{pokemon.sprites.front_default}}" height="32px"> {{ pokemon.name }}
+      </div>
+    </td>
+    <td>
+      <button (click)="choose(team.id)" class="btn btn-outline-primary">Select</button>
+    </td>
+  </tr>
+  </tbody>
+</table>

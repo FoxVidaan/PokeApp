@@ -1,0 +1,61 @@
+.home-container {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 116px);
+}
+
+.line {
+  flex: 1;
+  display: flex;
+  width: 100%;
+
+  &:nth-child(2n + 2) {
+    .animated {
+      animation-direction: reverse;
+    }
+
+    .animated.delay {
+      animation-direction: reverse;
+    }
+  }
+}
+
+.animated {
+  width: 100%;
+  display: flex;
+  position: relative;
+  animation: scroll 10s linear infinite ;
+}
+
+.animated.delay {
+  right: 0;
+  animation: scroll2 10s linear infinite ;
+}
+
+.sprite {
+  flex: 1;
+  width: 200px;
+
+  img {
+    width: 100%;
+  }
+}
+
+@keyframes scroll {
+  from {
+    left: 0;
+  }
+  to {
+    left: -100%;
+  }
+}
+
+@keyframes scroll2 {
+  from {
+    right: 0;
+  }
+  to {
+    right: 100%;
+  }
+}

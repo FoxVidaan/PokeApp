@@ -1,0 +1,50 @@
+.pokemon-number {
+  height: 32px;
+  position: fixed;
+  top: 21px;
+  right: 20px;
+}
+
+.cards, .team {
+  padding: 20px;
+  display: flex;
+  flex-flow: wrap;
+  gap: 15px;
+  justify-content: center;
+  text-align: center;
+}
+
+.save {
+  justify-self: flex-end;
+}
+
+.card {
+  border-radius: 5px;
+  padding: 10px 20px;
+  background-color: white;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border-bottom: 5px solid black;
+  &:hover {
+    background-color: #EEEEEE;
+  }
+
+  &:nth-child(5n + 1) {
+    border-color: #E3350D;
+  }
+  &:nth-child(5n + 2) {
+    border-color: #ee6b2f;
+  }
+  &:nth-child(5n + 3) {
+    border-color: #e6bc2f;
+  }
+  &:nth-child(5n + 4) {
+    border-color: #4dad5b;
+  }
+  &:nth-child(5n + 5) {
+    border-color: #30a7d7;
+  }
+}
