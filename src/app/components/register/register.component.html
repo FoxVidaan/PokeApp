@@ -1,0 +1,35 @@
+<div class="main">
+    <form #registerForm="ngForm" (ngSubmit)="onRegister(registerForm.value)">
+        <div class="register">
+            <h1 class="heading">Register</h1>
+            <div class="input">
+                <label for="firstName">First name</label>
+                <input type="text" class="form-control" name="firstName" id="firstName" autocomplete="false" ngModel #firstNameInput="ngModel" required/>
+            </div>
+            <span class="help-block" style="color: red;" *ngIf="firstNameInput.invalid && firstNameInput.touched">Please enter a last name</span>
+            <div class="input">
+                <label for="lastName">Last name</label>
+                <input type="text" class="form-control" name="lastName"  id="lastName" autocomplete="false" ngModel #lastNameInput="ngModel" required/>
+            </div>
+            <span class="help-block" style="color: red;" *ngIf="lastNameInput.invalid && lastNameInput.touched">Please enter a first name</span>
+            <div class="input">
+                <label for="username">Username</label>
+                <input type="text" class="form-control" name="username" id="username" autocomplete="false" ngModel #usernameInput="ngModel" required/>
+            </div>
+            <span class="help-block" style="color: red;" *ngIf="usernameInput.invalid && usernameInput.touched">Please enter a username</span>
+            <div class="input">
+                <label for="email">email</label>
+                <input type="text" class="form-control" name="email" id="email" autocomplete="false" ngModel #emailInput="ngModel" required/>
+            </div>
+            <span class="help-block" style="color: red;" *ngIf="emailInput.invalid && emailInput.touched">Please enter a username</span>
+            <div class="divider"></div>
+            <button type="submit" [disabled]="registerForm.invalid" class="register-btn">Register</button>
+
+            <div>
+                <a routerLink="/login" style="color: #04fefa;" >Log In</a>
+            </div>
+        </div>
+
+        
+    </form>    
+</div>

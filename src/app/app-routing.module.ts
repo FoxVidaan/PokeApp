@@ -5,11 +5,26 @@ import {TeamsComponent} from "./components/teams/teams.component";
 import {NewTeamComponent} from "./components/new-team/new-team.component";
 import {TeamSelectionComponent} from "./components/team-selection/team-selection.component";
 import {PlayComponent} from "./components/play/play.component";
+import { LoginComponent } from './components/login/login.component';
+import { RegisterComponent } from './components/register/register.component';
+import { UserComponent } from './components/user/user.component';
 
 const routes: Routes = [
   {
     path: "",
     component: HomeComponent
+  },
+  {
+    path: "login", component: LoginComponent
+  },
+  {
+    path: "register", component: RegisterComponent
+  },
+  {
+    path: "user/management", component: UserComponent
+  },
+  {
+    path: "", redirectTo: "/login", pathMatch: "full"
   },
   {
     path: "teams",
