@@ -7,30 +7,34 @@
     box-sizing: border-box;
     font-family: inherit;
 }
+
 body {
     font-family: "Poppins", sans-serif;
 }
+
 .main {
-    height: 100vh;
+    position: absolute;
+    top: 75px;
+    left: 0;
+    height: calc(100vh - 75px);
     width: 100%;
     display: flex;
     align-content: center;
     align-items: center;
     justify-content: center;
-    background: url(https://c4.wallpaperflare.com/wallpaper/815/660/945/charizard-images-and-pictures-wallpaper-preview.jpg);
-    background-size: cover;
-    background-repeat: no-repeat;
 }
+
 .login {
     position: relative;
-    background: #686d6f7a;
+    background: white;
     padding: 35px 40px;
-    border-radius: 4px;
+    border-radius: 10px;
+    border-bottom: solid 10px #E3350D;
     z-index: 1;
     overflow: hidden;
-    box-shadow: 0px 12px 31px #ffffff52, 0px 36px 31px #000000a1;
     animation: login 0.88s ease;
 }
+
 @keyframes login {
     0% {
         transform: translateY(-10%) scale(0.8);
@@ -41,42 +45,33 @@ body {
         opacity: 1;
     }
 }
-.login:after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    background: url(https://c4.wallpaperflare.com/wallpaper/815/660/945/charizard-images-and-pictures-wallpaper-preview.jpg);
-    width: 100%;
-    z-index: -1;
-    background-size: 182vh;
-    background-position: 28%, 83%;
-    filter: blur(24px);
-    background-repeat: no-repeat;
-    opacity: 0.8;
-}
 
 .heading {
     font-size: 24px;
     font-weight: 400;
     text-align: center;
     margin-bottom: 18px;
-    color: white;
 }
 
 .input {
     display: block;
     margin-bottom: 13px;
     margin-top: 11px;
+    &:nth-child(2) input {
+        border-bottom: 4px solid #ee6b2f;
+    }
+    &:nth-child(3) input {
+        border-bottom: 4px solid #e6bc2f;
+    }
 }
+
 .input label {
     display: block;
     margin-bottom: 3px;
     font-size: 13px;
-    color: white;
     cursor: pointer;
 }
+
 .input input {
     width: 100%;
     padding: 10px;
@@ -86,15 +81,16 @@ body {
     border-radius: 4px;
     text-transform: none;
     background: #0000002b;
-    color: white;
     transition: all 0.2s ease;
 }
+
 .input input:hover {
-    background: #3d434c;
+    background: #bdbdbd;
 }
+
 .input input:focus {
-    box-shadow: 0px 2px 2px #0000002b, 0px 5px 10px #00000036;
-    background: #434343;
+    box-shadow: 0px 2px 2px #bdbdbd, 0px 5px 10px #bdbdbd;
+    background: #bdbdbd;
 }
 
 .login-btn {
@@ -102,66 +98,24 @@ body {
     margin-bottom: 15px;
     padding: 8px 15px;
     font-size: 14px;
-    background: #00000038;
-    border: 2px solid #38363654;
-    color: #e1e1e1;
+    color: black;
+    font-weight: 800;
+    border: none;
+    border-bottom: 4px solid #ee6b2f;
+    background: #0000002b;
     border-radius: 4px;
     width: 100%;
     transition: all 0.2s cubic-bezier(0.79, 0.14, 0.15, 0.86);
     cursor: pointer;
 }
+
 .login-btn:hover {
-    background: #0663b4;
+    background: #ee6b2f;
+    color: white;
     transition: all 0.1s ease;
 }
+
 .login-btn:focus {
     box-shadow: 0px 0px 0px 2px #a7a7a7b5;
     background: #00000061;
-}
-.meta-text {
-    font-size: 13px;
-    margin-bottom: 15px;
-    color: white;
-}
-.social-icons {
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.social-icon {
-    min-height: 40px;
-    background: var(--c);
-    margin-right: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 40px;
-    max-width: 40px;
-    max-height: 40px;
-    border-radius: 28px;
-    box-shadow: 0px 4px 8px #0c0b0b00;
-    transition: all 0.2s ease;
-    border: none;
-    outline: none;
-}
-.social-icon:hover {
-    box-shadow: 0px 4px 14px #0000007a;
-}
-.social-icon:focus {
-    box-shadow: 0px 0px 0px 2px currentColor;
-    transform: scale(0.9);
-}
-.social-icon * {
-    pointer-events: none;
-    fill: #fff;
-}
-.social-icon.fb {
-    --c: #4267b2;
-}
-.social-icon.pr {
-    --c: #e60023;
-}
-.social-icon.in {
-    --c: #5b51d8;
 }

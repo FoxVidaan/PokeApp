@@ -24,7 +24,8 @@ export class PlayComponent implements OnInit {
     'ennemyAttack': 4,
     'ko': 5,
     'win': 6,
-    'loose': 6
+    'loose': 7,
+    'endTurn': 8
   };
 
   constructor(private teamService: TeamsService, private pokemonsService: PokemonsService, private route: ActivatedRoute, private router: Router) {
@@ -39,13 +40,21 @@ export class PlayComponent implements OnInit {
     let targetElem;
     let progress;
     let text = (document.querySelector(`.text-zone .text`) as HTMLElement);
+    let moves = (document.querySelectorAll(".move") as NodeListOf<HTMLElement>);
+    let pokemonCards = (document.querySelectorAll(".pokemon-card") as NodeListOf<HTMLElement>);
+    moves.forEach((input) => {
+      input.style.pointerEvents = "none";
+    });
+    pokemonCards.forEach((input) => {
+      input.style.pointerEvents = "none";
+    });
 
     switch (action) {
       case 1:
         this.pokemonActive.isAttacked = false;
         this.ennemyActive.isAttacked = false;
         this.selectedMove = param;
-        if (this.pokemonActive.speed > this.ennemyActive.speed) {
+        if (this.pokemonActive.speed >= this.ennemyActive.speed) {
           this.main(this.actions.pokemonAttack);
         } else {
           this.main(this.actions.ennemyAttack);
@@ -54,8 +63,8 @@ export class PlayComponent implements OnInit {
 
       case 2:
         text.innerHTML = "Change of pokemon";
-        this.pokemonActive.isAttacked = true;
         this.pokemonActive = param;
+        this.pokemonActive.isAttacked = true;
         let hp = (this.pokemonActive.hp / this.pokemonActive.maxHp) * 100;
         progress = (document.querySelector(`.player .progress`) as HTMLElement);
         progress.style.width = `${hp}%`;
@@ -99,7 +108,7 @@ export class PlayComponent implements OnInit {
               this.ennemyActive = pokemon;
             }
           }
-        }        
+        }
 
         if (this.pokemonActive.ko != true && this.ennemyActive.ko == true) {
           this.main(this.actions.win);
@@ -119,6 +128,7 @@ export class PlayComponent implements OnInit {
 
         progress.style.width = "100%";
         targetElem.classList.remove('ko');
+        this.main(this.actions.endTurn);
         break;
 
       case 6:
@@ -129,6 +139,16 @@ export class PlayComponent implements OnInit {
       case 7:
         text.innerHTML = `You lost the fight. Try again.`;
 
+        break;
+
+      case 8:
+        text.innerHTML = `Choice of action`;
+        moves.forEach((input) => {
+          input.style.pointerEvents = "all";
+        });
+        pokemonCards.forEach((input) => {
+          input.style.pointerEvents = "all";
+        });
         break;
     }
   }
@@ -190,7 +210,11 @@ export class PlayComponent implements OnInit {
     let targetElem = (document.querySelector(`.${className} .sprite`) as HTMLElement);
     let progress = (document.querySelector(`.${className} .progress`) as HTMLElement);
 
-    target.hp -= Math.ceil(move.power / 2);
+    let damage = move.power;
+    if (damage == NaN) {
+      damage = 0;
+    }
+    target.hp -= Math.ceil(damage / 2);
     let hp = (target.hp / target.maxHp) * 100;
 
     if (hp <= 0) {
@@ -212,6 +236,8 @@ export class PlayComponent implements OnInit {
         this.main(this.actions.ennemyAttack);
       } else if (this.ennemyActive.isAttacked && !this.pokemonActive.isAttacked) {
         this.main(this.actions.pokemonAttack);
+      } else {
+        this.main(this.actions.endTurn);
       }
     }, 1500);
   }
