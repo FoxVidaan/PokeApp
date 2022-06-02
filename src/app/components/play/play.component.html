@@ -1,42 +1,43 @@
-<div class="play" *ngIf="team.pokemons.length > 0">
-  <div class="versus-screen">
-    <div class="player pokemon" style="--translate: -7px">
-      <img class="sprite" *ngIf="pokemonActive" src="{{pokemonActive.sprites.back_default}}">
-      <div class="hp">
-        <div class="text">HP : {{pokemonActive.hp}} / 500</div>
-        <div class="progress-bar">
-          <div class="progress"></div>
+<div class="play" *ngIf="pokemonActive != undefined && ennemyActive != undefined">
+    <div class="versus-screen">
+        <div *ngIf="pokemonActive" class="player pokemon" style="--translate: -7px">
+            <img class="sprite" src="{{pokemonActive.sprites.back_default}}">
+            <div class="hp">
+                <div class="text">HP : {{ pokemonActive.hp }} / {{ pokemonActive.maxHp }}</div>
+                <div class="progress-bar">
+                    <div class="progress"></div>
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-    <div class="ennemy pokemon" style="--translate: 7px">
-      <img class="sprite" *ngIf="pokemonActive" src="{{ennemyActive.sprites.front_default}}">
-      <div class="hp">
-        <div class="progress-bar">
-          <div class="progress"></div>
-        </div>
-        <div class="text">HP : {{ennemyActive.hp}} / 500</div>
-      </div>
-    </div>
-  </div>
-  <div class="controls">
-    <div class="moves">
-      <div class="move" *ngFor="let move of pokemonActive.moves" (click)="attack(move)">
-        <p>{{move.name}}</p>
-        <span>PP :{{move.pp}}</span>
-      </div>
-    </div>
-    <div class="menu">
-      <div class="items">
 
-      </div>
-      <div class="team">
-        <div class="pokemon-card" *ngFor="let pokemon of team.pokemons" (click)="changeActive(pokemon)">
-          <img class="pokemon-sprite" src="{{pokemon.sprites.front_default}}" alt="{{pokemon.name}}" height="64px">
-          <span class="pokemon-name">{{pokemon.name}}</span>
+        <div *ngIf="ennemyActive" class="ennemy pokemon " style="--translate: 7px ">
+            <img class="sprite" src="{{ennemyActive.sprites.front_default}} ">
+            <div class="hp">
+                <div class="progress-bar ">
+                    <div class="progress "></div>
+                </div>
+                <div class="text">HP : {{ ennemyActive.hp }} / {{ ennemyActive.maxHp }}</div>
+            </div>
         </div>
-        <div class="leave-button" (click)="leave()"><img src="assets/icons8-fire-exit-100.png" height="32px"> Leave</div>
-      </div>
     </div>
-  </div>
+    <div class="controls">
+        <div class="text-zone">
+            <p class="text">Choice of action</p>
+        </div>
+        <div class="moves">
+            <div class="move" *ngFor="let move of pokemonActive.moves " (click)="main(actions.speedComparison, move) ">
+                <p>{{ move.name }}</p>
+                <span>PP :{{ move.pp }}</span>
+            </div>
+        </div>
+        <div class="menu ">
+            <div class="team ">
+                <div class="pokemon-card " *ngFor="let pokemon of team.pokemons " (click)="main(actions.pokemonChange, pokemon) ">
+                    <img class="pokemon-sprite " src="{{pokemon.sprites.front_default}} " alt="{{pokemon.name}} " height="64px ">
+                    <span class="pokemon-name ">{{ pokemon.name }}</span>
+                </div>
+                <div class="leave-button " (click)="leave() "><img src="assets/icons8-fire-exit-100.png " height="32px "> Leave</div>
+            </div>
+        </div>
+    </div>
 </div>

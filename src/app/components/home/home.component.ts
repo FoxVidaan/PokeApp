@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Pokemon } from 'src/app/class/Pokemon';
 import {PokemonsService} from "../../services/pokemons.service";
 
 @Component({
@@ -19,14 +20,14 @@ export class HomeComponent implements OnInit {
   }
 
   getPokemons() {
-    let rand = Math.floor(Math.random() * (600 - 1) + 1);
-    for (let i = rand; i < rand+40; i++) {
-      this.pokemonsService.getPokemon(`https://pokeapi.co/api/v2/pokemon/${i}`).subscribe(data => {
-        if (i < rand + 10) {
+    for (let i = 0; i < 40; i++) {
+      let rand = Math.floor(Math.random() * (800 - 1) + 1);
+      this.pokemonsService.getPokemon(`https://pokeapi.co/api/v2/pokemon/${rand}`).subscribe(data => {
+        if (i < 10) {
           this.line1.push(data);
-        } else if (i < rand + 20) {
+        } else if (i < 20) {
           this.line2.push(data);
-        } else if (i < rand+30) {
+        } else if (i < 30) {
           this.line3.push(data);
         } else  {
           this.line4.push(data);

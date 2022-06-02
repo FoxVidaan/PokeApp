@@ -9,6 +9,7 @@ import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { UserComponent } from './components/user/user.component';
 
+
 const routes: Routes = [
   {
     path: "",

@@ -1,8 +1,9 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {TeamsService} from "../../services/teams.service";
-import {Team} from "../../class/Team";
-import {PokemonsService} from "../../services/pokemons.service";
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from "@angular/router";
+import { TeamsService } from "../../services/teams.service";
+import { Team } from "../../class/Team";
+import { PokemonsService } from "../../services/pokemons.service";
+import { Pokemon } from 'src/app/class/Pokemon';
 
 @Component({
   selector: 'app-play',
@@ -13,9 +14,18 @@ export class PlayComponent implements OnInit {
   id: number = 0;
   ennemyTeam: Team = new Team("", []);
   ennemyActive = this.ennemyTeam.pokemons[0];
-  team: Team = new Team("", []);
+  team: Team = new Team("", [])
   pokemonActive = this.team.pokemons[0];
-  moves = [];
+  selectedMove: any;
+  actions = {
+    'speedComparison': 1,
+    'pokemonChange': 2,
+    'pokemonAttack': 3,
+    'ennemyAttack': 4,
+    'ko': 5,
+    'win': 6,
+    'loose': 6
+  };
 
   constructor(private teamService: TeamsService, private pokemonsService: PokemonsService, private route: ActivatedRoute, private router: Router) {
   }
@@ -25,67 +35,185 @@ export class PlayComponent implements OnInit {
     this.getEnnemies();
   }
 
+  main(action: number, param?: any) {
+    let targetElem;
+    let progress;
+    let text = (document.querySelector(`.text-zone .text`) as HTMLElement);
+
+    switch (action) {
+      case 1:
+        this.pokemonActive.isAttacked = false;
+        this.ennemyActive.isAttacked = false;
+        this.selectedMove = param;
+        if (this.pokemonActive.speed > this.ennemyActive.speed) {
+          this.main(this.actions.pokemonAttack);
+        } else {
+          this.main(this.actions.ennemyAttack);
+        }
+        break;
+
+      case 2:
+        text.innerHTML = "Change of pokemon";
+        this.pokemonActive.isAttacked = true;
+        this.pokemonActive = param;
+        let hp = (this.pokemonActive.hp / this.pokemonActive.maxHp) * 100;
+        progress = (document.querySelector(`.player .progress`) as HTMLElement);
+        progress.style.width = `${hp}%`;
+        setTimeout(() => {
+          this.main(this.actions.ennemyAttack);
+        }, 1500);
+        break;
+      case 3:
+        text.innerHTML = `${this.pokemonActive.name} uses ${this.selectedMove.name}`;
+        this.pokemonActive.isAttacked = true;
+        this.attack(this.ennemyActive, this.selectedMove, "ennemy");
+        break;
+
+      case 4:
+
+        this.ennemyActive.isAttacked = true;
+        let min = Math.ceil(0);
+        let max = Math.floor(4);
+        let ennemyMove = this.ennemyActive.moves[Math.floor(Math.random() * (max - min)) + min];
+        text.innerHTML = `${this.ennemyActive.name} uses ${ennemyMove.name}`;
+        this.attack(this.pokemonActive, ennemyMove, "player");
+        break;
+
+      case 5:
+        targetElem = (document.querySelector(`.${param} .sprite`) as HTMLElement);
+        progress = (document.querySelector(`.${param} .progress`) as HTMLElement);
+
+        if (param == "player") {
+          this.pokemonActive.ko = true;
+          text.innerHTML = `${this.pokemonActive.name} is ko`;
+          for (const pokemon of this.team.pokemons) {
+            if (!pokemon.ko) {
+              this.pokemonActive = pokemon;
+            }
+          }
+        } else {
+          this.ennemyActive.ko = true;
+          text.innerHTML = `${this.ennemyActive.name} is ko`;
+          for (const pokemon of this.ennemyTeam.pokemons) {
+            if (!pokemon.ko) {
+              this.ennemyActive = pokemon;
+            }
+          }
+        }        
+
+        if (this.pokemonActive.ko != true && this.ennemyActive.ko == true) {
+          this.main(this.actions.win);
+          return;
+        } else if (this.pokemonActive.ko == true && this.ennemyActive.ko != true) {
+          this.main(this.actions.loose);
+          return;
+        }
+
+        setTimeout(() => {
+          if (param == "player") {
+            text.innerHTML = ` ${this.pokemonActive.name} enters the arena`;
+          } else {
+            text.innerHTML = ` ${this.ennemyActive.name} enters the arena`;
+          }
+        }, 1500);
+
+        progress.style.width = "100%";
+        targetElem.classList.remove('ko');
+        break;
+
+      case 6:
+        text.innerHTML = `Congratulations, you win the fight.`;
+
+        break;
+
+      case 7:
+        text.innerHTML = `You lost the fight. Try again.`;
+
+        break;
+    }
+  }
+
   getEnnemies() {
     for (let i = 0; i < 3; i++) {
       this.pokemonsService.getPokemon(`https://pokeapi.co/api/v2/pokemon/${Math.floor(Math.random() * (150 - 1)) + 1}/`).subscribe(data => {
-        data.hp = 500;
-        this.ennemyTeam.pokemons.push(data);
-        this.ennemyActive = data;
+        let poke: Pokemon = {
+          id: i,
+          name: data.name,
+          hp: data.stats[0].base_stat,
+          maxHp: data.stats[0].base_stat,
+          speed: data.stats[5].base_stat,
+          sprites: data.sprites,
+          moves: data.moves.slice(0, 4),
+          isAttacked: false
+        };
+        this.ennemyTeam.pokemons.push(poke);
+        if (i == 2) {
+          this.getMoves(this.ennemyTeam.pokemons);
+          this.ennemyActive = this.ennemyTeam.pokemons[0];
+        }
       })
     }
   }
 
   getTeam() {
-    this.route.queryParams
-      .subscribe(params => {
-        this.id = params['teamId'];
-        this.teamService.getTeam(this.id).subscribe(data => {
-          this.team = data;
-          this.pokemonActive = this.team.pokemons[0];
-          this.pokemonActive.hp = 500;
-          this.getMoves();
-        });
+    this.route.queryParams.subscribe(params => {
+      let id = params['teamId'];
+      this.teamService.getTeam(id).subscribe(data => {
+        this.team.pokemons = data.pokemons;
+        this.getMoves(this.team.pokemons);
+        this.pokemonActive = this.team.pokemons[0];
       });
+    });
   }
 
-  getMoves() {
-    this.pokemonActive.moves.splice(4, this.pokemonActive.moves.length);
-    for (let i = 0; i < this.pokemonActive.moves.length; i++) {
-      this.pokemonsService.getMove(this.pokemonActive.moves[i].move.url).subscribe(data => {
-        this.pokemonActive.moves[i] = data;
-      });
+  getMoves(team: Array<Pokemon>): any {
+    for (const pokemon of team) {
+      for (let index = 0; index < pokemon.moves.length; index++) {
+        this.pokemonsService.getMove(pokemon.moves[index].move.url).subscribe(data => {
+          let move = {
+            'pp': data.pp,
+            'name': data.name,
+            'accuracy': data.accuracy,
+            'power': data.power
+          };
+
+          pokemon.moves[index] = move;
+        });
+      }
     }
   }
 
-  attack(move: any) {
+  attack(target: Pokemon, move: any, className: string) {
     if (move.pp <= 0) return;
-
     move.pp -= 1;
 
-    let ennemy = (document.querySelector(".ennemy .sprite") as HTMLElement);
-    let progress = (document.querySelector(".ennemy .progress") as HTMLElement);
+    let targetElem = (document.querySelector(`.${className} .sprite`) as HTMLElement);
+    let progress = (document.querySelector(`.${className} .progress`) as HTMLElement);
 
-    this.ennemyActive.hp -= move.power;
-    let hp = (this.ennemyActive.hp / 500) * 100;
+    target.hp -= Math.ceil(move.power / 2);
+    let hp = (target.hp / target.maxHp) * 100;
 
-    if (hp > 0) {
-      console.log(hp);
-      ennemy.classList.add("damage");
-      progress.style.width = `${hp}%`;
-    } else {
+    if (hp <= 0) {
       progress.style.width = "0%";
-      this.ennemyActive.hp = 0;
-      ennemy.classList.add("ko");
+      targetElem.classList.add("ko");
+      target.hp = 0;
+      setTimeout(() => {
+        this.main(this.actions.ko, className);
+      }, 1500);
+      return;
     }
 
-    setTimeout(() => {
-      ennemy.classList.remove("damage");
-    }, 900)
-  }
+    targetElem.classList.add("damage");
+    progress.style.width = `${hp}%`;
 
-  changeActive(pokemon: any) {
-    this.pokemonActive = pokemon;
-    this.getMoves();
+    setTimeout(() => {
+      targetElem.classList.remove("damage");
+      if (this.pokemonActive.isAttacked && !this.ennemyActive.isAttacked) {
+        this.main(this.actions.ennemyAttack);
+      } else if (this.ennemyActive.isAttacked && !this.pokemonActive.isAttacked) {
+        this.main(this.actions.pokemonAttack);
+      }
+    }, 1500);
   }
 
   leave() {
