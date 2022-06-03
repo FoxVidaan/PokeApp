@@ -3,6 +3,7 @@
   <button class="reset btn btn-outline-danger" (click)="reset()">Reset</button>
   <button *ngIf="team.pokemons.length > 2" class="save btn btn-outline-primary" (click)="save(name.value)">Save</button>
 </div>
+<span *ngIf="isError">Oups, une erreur s'est produite. Veuillez réessayer ultérieurement.</span>
 
 <div class="pokemon-number">
   <img *ngFor="let pokemon of team.pokemons" src="assets/Poké_Ball_icon.png" alt="{{pokemon.name}}" height="32px">

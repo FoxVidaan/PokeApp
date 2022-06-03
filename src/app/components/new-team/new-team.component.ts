@@ -13,6 +13,7 @@ import { Pokemon } from 'src/app/class/Pokemon';
 export class NewTeamComponent implements OnInit {
   team: Team = new Team("", []);
   pokemons: Array<any> = [];
+  isError: boolean = false;
 
   constructor(private pokemonsService: PokemonsService, private teamsService: TeamsService, private router: Router) {
     this.pokemonsService.getAll().subscribe(data => {
@@ -48,10 +49,14 @@ export class NewTeamComponent implements OnInit {
     if (name.length > 2) {
       this.team.name = name;
     } else {
-      this.team.name = `Team ${this.team.pokemons[0].name}`
+      this.team.name = `Team ${this.team.pokemons[0].name}`;
     }
     this.teamsService.addData(this.team).subscribe(data => {
-      this.router.navigate(['teams'])
+      if(data == null){
+        this.isError = true;
+      }else{
+        this.router.navigate(['teams']);
+      }
     });
   }
 

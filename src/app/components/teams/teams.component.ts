@@ -10,10 +10,14 @@ import {Router} from "@angular/router";
 })
 export class TeamsComponent implements OnInit {
   teams: Array<Team> = [];
+  isEmpty: boolean = false;
 
   constructor(private teamsService: TeamsService, private router: Router) {
     this.teamsService.getData().subscribe(data => {
       this.teams = data;
+      if(null == this.teams){
+        this.isEmpty = true;
+      }
     });
   }
 
