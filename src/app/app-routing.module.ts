@@ -12,21 +12,22 @@ import { UserComponent } from './components/user/user.component';
 
 const routes: Routes = [
   {
-    path: "",
-    component: HomeComponent
-  },
-  {
     path: "login", component: LoginComponent
   },
   {
     path: "register", component: RegisterComponent
   },
   {
-    path: "user/management", component: UserComponent
+    path: "user", component: UserComponent
+  },
+  {
+    path: "",
+    component: HomeComponent
   },
   {
     path: "", redirectTo: "/login", pathMatch: "full"
   },
+  
   {
     path: "teams",
     component: TeamsComponent

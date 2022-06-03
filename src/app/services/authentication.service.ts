@@ -26,7 +26,7 @@ export class AuthenticationService {
     return this.http.post<User>(`${this.host}/user/register`, user);
   }
 
-  public logout(): void {
+  public logOut(): void {
     this.token = null;
     this.loggedInUsername = null;
     localStorage.removeItem('user');
@@ -44,7 +44,7 @@ export class AuthenticationService {
   }
 
   public getUserFromLocalCache(): User {
-    return JSON.parse(localStorage.getItem('user'))
+    return JSON.parse(localStorage.getItem('user'));
   }
 
   public loadToken(): void {
@@ -55,20 +55,20 @@ export class AuthenticationService {
     return this.token;
   }
 
-  public isLoggedIn(): boolean {
+  public isUserLoggedIn(): boolean {
     this.loadToken();
     if (this.token != null && this.token !== ''){
-      if (this.jwtHelper.decodeToken(this.token).sub != null || ''){
-        if (!this.jwtHelper.isTokenExpired(this.token)){
+      if (this.jwtHelper.decodeToken(this.token).sub != null || '') {
+        if (!this.jwtHelper.isTokenExpired(this.token)) {
           this.loggedInUsername = this.jwtHelper.decodeToken(this.token).sub;
           return true;
         }
       }
     } else {
-      this.logout();
+      this.logOut();
       return false;
-    }   
-    return true;
+    }
+    return false;
   }
 
 }
