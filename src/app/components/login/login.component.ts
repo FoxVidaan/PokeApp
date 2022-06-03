@@ -14,46 +14,44 @@ import { NotificationService } from 'src/app/services/notification.service';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit, OnDestroy {
-  public showLoading!: boolean;
+  public showLoading: boolean;
   private subscriptions: Subscription[] = [];
 
   constructor(private router: Router, private authenticationService: AuthenticationService,
-              private notificationService: NotificationService) { }
+    private notificationService: NotificationService) { }
 
   ngOnInit(): void {
-    if(this.authenticationService.isLoggedIn()) {
-      this.router.navigateByUrl('user/management');
+    if (this.authenticationService.isUserLoggedIn()) {
+      this.router.navigateByUrl('/user');
     } else {
-      this.router.navigateByUrl('/login')
+      this.router.navigateByUrl('/login');
     }
   }
 
   public onLogin(user: User): void {
     this.showLoading = true;
-    console.log(user);
     this.subscriptions.push(
       this.authenticationService.login(user).subscribe(
         (response: HttpResponse<User>) => {
           const token = response.headers.get(HeaderType.JWT_TOKEN);
           this.authenticationService.saveToken(token);
           this.authenticationService.addUserToLocalCache(response.body);
-          this.router.navigateByUrl('');
+          this.router.navigateByUrl('/user');
           this.showLoading = false;
         },
         (errorResponse: HttpErrorResponse) => {
-          console.log(errorResponse);
           this.sendErrorNotification(NotificationType.ERROR, errorResponse.error.message);
           this.showLoading = false;
-          
         }
       )
     );
   }
-  private sendErrorNotification(notificationType: NotificationType, message: string) {
-    if (message){
+
+  private sendErrorNotification(notificationType: NotificationType, message: string): void {
+    if (message) {
       this.notificationService.notify(notificationType, message);
     } else {
-      this.notificationService.notify(notificationType, 'AN ERROR OCCURED. PLEASE TRY AGAIN')
+      this.notificationService.notify(notificationType, 'An error occurred. Please try again.');
     }
   }
 
